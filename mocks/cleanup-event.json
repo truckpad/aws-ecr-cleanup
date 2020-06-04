@@ -1,0 +1,16 @@
+{
+    "version": "0",
+    "id": "a5d8539e-745a-e8e9-85cd-0a3e30e67e79",
+    "detail-type": "Scheduled Event",
+    "source": "aws.events",
+    "account": "218821882188",
+    "time": "2020-06-04T02:23:48Z",
+    "region": "us-east-1",
+    "Records": [
+        { "tagStatus": "UNTAGGED", "repositories": ["*"] }
+    ],
+    "resources": [
+        "arn:aws:events:us-east-1:218821882188:rule/ecr-cleanup-ImagesEventsRuleSchedule1-1RF8BTCR4L22B"
+    ],
+    "detail": {}
+}

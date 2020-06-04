@@ -1,0 +1,9 @@
+# Distribution / packaging
+__pycache__/
+
+# Serverless directories
+.serverless/
+.idea/
+node_modules/
+package-lock.json
+yarn.lock

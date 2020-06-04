@@ -1,0 +1,68 @@
+service: ecr
+
+plugins:
+    - serverless-python-requirements
+
+provider:
+    name: aws
+    runtime: python3.7
+    stage: cleanup
+    # region: us-east-1
+    # tracing:
+    #     lambda: true
+    iamRoleStatements:
+        -   Effect: Allow
+            Action:
+                - ecr:ListImages
+                - ecr:BatchDeleteImage
+                - ecr:DescribeRepositories
+            Resource:
+                - 'Fn::Join':
+                    - ":"
+                    -   - "arn:aws:ecr"
+                        - Ref: AWS::Region
+                        - Ref: AWS::AccountId
+                        - "repository/*"
+
+package:
+    include:
+        - aws_lambda.py
+        - requirements.txt
+    exclude:
+        - .idea/**
+        - node_modules/**
+        - package*.json
+        - yarn.lock
+        - .git*
+        - mocks/**
+
+functions:
+    images:
+        handler: aws_lambda.handler
+        memorySize: 128
+        timeout: 600
+        logRetentionInDays: 14
+        events:
+            - schedule:
+                rate: "cron(30 4 ? * 2-7 *)"
+                # rate: "rate(5 minutes)"
+                enabled: true
+                inputTransformer:
+                    inputPathsMap:
+                        eventTime: '$.time'
+                        eventSource: '$.source'
+                    inputTemplate: |
+                        {
+                            "source": <eventSource>,
+                            "time": <eventTime>,
+                            "Records": [
+                                {
+                                    "tagStatus": "UNTAGGED",
+                                    "repositories": ["*"]
+                                },
+                                {
+                                    "tagStatus": "TAGGED",
+                                    "repositories": ["*"]
+                                }
+                            ]
+                        }

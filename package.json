@@ -1,0 +1,16 @@
+{
+  "name": "ecr-cleanup",
+  "version": "0.0.1",
+  "description": "Processor for Amazon ECR smart cleanup",
+  "main": "index.js",
+  "scripts": {
+    "cleanup": "node_modules/.bin/serverless invoke local --function images --path mocks/cleanup-event.json",
+    "deploy": "node_modules/.bin/serverless deploy",
+    "remove": "node_modules/.bin/serverless remove"
+  },
+  "author": "Marcelo Manzan",
+  "license": "MIT",
+  "devDependencies": {
+    "serverless": "^1.72.0"
+  }
+}
