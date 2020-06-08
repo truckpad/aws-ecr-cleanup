@@ -13,7 +13,7 @@ def map_tags(images):
     releases, pre_releases, others = [], [], []
     for img in images:
         tag = img.get('imageTag') or ''
-        m = re.match("^v?(\\d+)\\.(\\d+)\\.(\\d+)(?:-(\\d+)-g[0-9a-f]{7,})?$", tag)
+        m = re.match("^v?(\\d+)\\.(\\d+)\\.(\\d+)(?:-(\\d+)(?:-g[0-9a-f]{7,})?)?$", tag)
         if m:
             version = [int(v) for v in m.groups() if v != None]
             if len(version) == 3 or version[3] == 0:
