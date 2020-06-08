@@ -29,11 +29,16 @@ def map_tags(images):
     return dict(releases=releases, pre_releases=pre_releases, others=others)
 
 
-def destroy(client, repo, tagStatus, images):
+def destroy(client, repo, tagStatus, images, keep: int = 0):
     if images:
-        response = client.batch_delete_image(repositoryName=repo,
-                                             imageIds=images)
-        print('Destroyed %s imageIds from "%s": %s' % (tagStatus, repo, json.dumps(response)))
+        if len(images) > keep:
+            response = client.batch_delete_image(repositoryName=repo,
+                                                 imageIds=images[keep:])
+            resp = json.dumps(response)
+            print('Destroyed %s imageIds from "%s": %s' % (tagStatus, repo, resp))
+        if keep > 0:
+            imgs = json.dumps(images[0:keep])
+            print('Kept %s imageIds from "%s": %s' % (tagStatus, repo, imgs))
     else:
         print('No %s imageIds found on "%s"' % (tagStatus, repo))
 
@@ -50,8 +55,8 @@ def cleanup_tagged(client, repos, config):
         images = client.list_images(repositoryName=repo,
                                     filter={'tagStatus': 'TAGGED'})
         mapped_imgs = map_tags(images['imageIds'])
-        destroy(client, repo, 'RELEASE', mapped_imgs['releases'][5:])
-        destroy(client, repo, 'PRE_RELEASE', mapped_imgs['pre_releases'][3:])
+        destroy(client, repo, 'RELEASE', mapped_imgs['releases'], keep=5)
+        destroy(client, repo, 'PRE_RELEASE', mapped_imgs['pre_releases'], keep=3)
         if mapped_imgs['others']:
             others = json.dumps(mapped_imgs['others'])
             print('Kept UNKNOWN imageIds from "%s": %s' % (repo, others))
