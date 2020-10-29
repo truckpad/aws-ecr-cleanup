@@ -41,7 +41,7 @@ functions:
         handler: aws_lambda.handler
         memorySize: 128
         timeout: 600
-        logRetentionInDays: 14
+        # logRetentionInDays: 14
         events:
             - schedule:
                 rate: "cron(30 4 ? * 2-7 *)"
